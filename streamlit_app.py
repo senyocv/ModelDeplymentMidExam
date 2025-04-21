@@ -34,11 +34,18 @@ user_input = {}
 # AUTO SLIDER
 numerical_columns = raw_data.drop(columns=cat_cols + ['booking_status']).select_dtypes(include=np.number).columns
 for col in numerical_columns:
+    min_val = float(raw_data[col].min())
+    max_val = float(raw_data[col].max())
+    mean_val = float(raw_data[col].mean())
+
+    step = 1.0
+    
     user_input[col] = st.sidebar.slider(
         col,
-        float(raw_data[col].min()),
-        float(raw_data[col].max()),
-        float(raw_data[col].mean())
+        min_val,
+        max_val,
+        mean_val,
+        step=step
     )
 
 # SELECT BOX
