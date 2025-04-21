@@ -34,16 +34,21 @@ user_input = {}
 # AUTO SLIDER
 numerical_columns = raw_data.drop(columns=cat_cols + ['booking_status']).select_dtypes(include=np.number).columns
 for col in numerical_columns:
-    if col == 'avg_price_per_room':
-        step = 0.1
-    else:
-        step = 1
+    min_val = float(raw_data[col].min())
+    max_val = float(raw_data[col].max())
+    mean_val = float(raw_data[col].mean())
+
+    if min_val == max_val:
+        st.sidebar.warning(f"Warning: Column '{col}' has the same min and max value. Using default range.")
+        min_val, max_val = 0, 10
+
+    step = 1 if col != 'avg_price_per_room' else 0.1
 
     user_input[col] = st.sidebar.slider(
         col,
-        float(raw_data[col].min()),
-        float(raw_data[col].max()),
-        float(raw_data[col].mean()),
+        min_val,
+        max_val,
+        mean_val,
         step=step
     )
 
