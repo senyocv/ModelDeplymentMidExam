@@ -4,7 +4,6 @@ import numpy as np
 import pickle
 from sklearn.preprocessing import OneHotEncoder
 
-
 @st.cache_resource
 def load_model():
     with open("rf_md_uts.pkl", "rb") as f:
