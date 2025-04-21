@@ -54,6 +54,8 @@ for col in numerical_columns:
 
 # SELECT BOX
 for col in cat_cols:
+    raw_data[col] = raw_data[col].fillna("Unknown").astype(str)
+for col in cat_cols:
     user_input[col] = st.sidebar.selectbox(col, sorted(raw_data[col].unique()))
 
 # gas pred
