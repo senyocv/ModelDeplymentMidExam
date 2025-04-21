@@ -31,9 +31,16 @@ st.sidebar.title("Hotel Booking Cancellation Predictor")
 st.sidebar.subheader("Input Data for Prediction")
 user_input = {}
 
-# AUTO SLIDER
+# Check numerical columns
 numerical_columns = raw_data.drop(columns=cat_cols + ['booking_status']).select_dtypes(include=np.number).columns
+st.write(f"Numerical Columns: {numerical_columns}")
+
+# Debug: check if all are numeric
 for col in numerical_columns:
+    if not pd.api.types.is_numeric_dtype(raw_data[col]):
+        st.warning(f"Column '{col}' is not numeric!")
+        continue
+
     min_val = float(raw_data[col].min())
     max_val = float(raw_data[col].max())
     mean_val = float(raw_data[col].mean())
@@ -44,13 +51,17 @@ for col in numerical_columns:
 
     step = 1 if col != 'avg_price_per_room' else 0.1
 
-    user_input[col] = st.sidebar.slider(
-        col,
-        min_val,
-        max_val,
-        mean_val,
-        step=step
-    )
+    # Debug: Log each slider creation
+    try:
+        user_input[col] = st.sidebar.slider(
+            col,
+            min_val,
+            max_val,
+            mean_val,
+            step=step
+        )
+    except Exception as e:
+        st.error(f"Error with column '{col}': {e}")
 
 # SELECT BOX
 for col in cat_cols:
