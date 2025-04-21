@@ -9,10 +9,11 @@ def load_model():
     with open("rf_md_uts.pkl", "rb") as f:
         return pickle.load(f)
 
-@st.cache_resource
+
 @st.cache_resource
 def load_encoder():
     df = pd.read_csv("Dataset_B_hotel.csv")
+    st.write("Columns in dataset:", df.columns.tolist())
     cat_cols = ['type_of_meal_plan', 'room_type_reserved', 'market_segment_type']
     
     df[cat_cols] = df[cat_cols].fillna("Unknown")
