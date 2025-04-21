@@ -33,14 +33,18 @@ user_input = {}
 
 # Check numerical columns
 numerical_columns = raw_data.drop(columns=cat_cols + ['booking_status']).select_dtypes(include=np.number).columns
-st.write(f"Numerical Columns: {numerical_columns}")
+st.write(f"Numerical Columns Identified: {numerical_columns}")
 
-# Debug: check if all are numeric
+# Ensure all numerical columns are properly typed and contain no NaNs
 for col in numerical_columns:
-    if not pd.api.types.is_numeric_dtype(raw_data[col]):
-        st.warning(f"Column '{col}' is not numeric!")
-        continue
-
+    raw_data[col] = pd.to_numeric(raw_data[col], errors='coerce')  # Convert to numeric, set errors as NaN
+    
+    # Check for missing or infinite values
+    if raw_data[col].isna().sum() > 0:
+        st.warning(f"Warning: Column '{col}' contains missing values.")
+    if np.isinf(raw_data[col]).sum() > 0:
+        st.warning(f"Warning: Column '{col}' contains infinite values.")
+    
     min_val = float(raw_data[col].min())
     max_val = float(raw_data[col].max())
     mean_val = float(raw_data[col].mean())
@@ -51,7 +55,7 @@ for col in numerical_columns:
 
     step = 1 if col != 'avg_price_per_room' else 0.1
 
-    # Debug: Log each slider creation
+    # Add sliders for numerical columns
     try:
         user_input[col] = st.sidebar.slider(
             col,
