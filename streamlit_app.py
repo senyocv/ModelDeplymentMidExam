@@ -4,8 +4,6 @@ import numpy as np
 import pickle
 from sklearn.preprocessing import OneHotEncoder
 
-st.caching.clear_cache()
-
 
 @st.cache_resource
 def load_model():
