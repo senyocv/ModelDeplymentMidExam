@@ -12,7 +12,6 @@ def load_model():
 @st.cache_resource
 def load_encoder():
     df = pd.read_csv("Dataset_B_hotel.csv")
-    st.write("Columns in dataset:", df.columns.tolist())
     cat_cols = ['type_of_meal_plan', 'room_type_reserved', 'market_segment_type']
     
     df[cat_cols] = df[cat_cols].fillna("Unknown")
@@ -35,11 +34,17 @@ user_input = {}
 # AUTO SLIDER
 numerical_columns = raw_data.drop(columns=cat_cols + ['booking_status']).select_dtypes(include=np.number).columns
 for col in numerical_columns:
+    if col == 'avg_price_per_room':
+        step = 0.1
+    else:
+        step = 1
+
     user_input[col] = st.sidebar.slider(
         col,
         float(raw_data[col].min()),
         float(raw_data[col].max()),
-        float(raw_data[col].mean())
+        float(raw_data[col].mean()),
+        step=step
     )
 
 # SELECT BOX
