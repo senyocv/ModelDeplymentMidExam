@@ -31,9 +31,12 @@ st.sidebar.title("Hotel Booking Cancellation Predictor")
 st.sidebar.subheader("Input Data for Prediction")
 user_input = {}
 
-# AUTO SLIDER
 numerical_columns = raw_data.drop(columns=cat_cols + ['booking_status']).select_dtypes(include=np.number).columns
-for col in numerical_columns:
+other_numerical_columns = [col for col in numerical_columns if col != 'avg_price_per_room']
+avg_price_column = 'avg_price_per_room'
+
+# SLIDERRR
+for col in other_numerical_columns:
     min_val = float(raw_data[col].min())
     max_val = float(raw_data[col].max())
     mean_val = float(raw_data[col].mean())
@@ -47,6 +50,20 @@ for col in numerical_columns:
         mean_val,
         step=step
     )
+
+## AVG PRICE PER ROOOM
+min_val = float(raw_data[avg_price_column].min())
+max_val = float(raw_data[avg_price_column].max())
+mean_val = float(raw_data[avg_price_column].mean())
+
+user_input[avg_price_column] = st.sidebar.slider(
+    avg_price_column,
+    min_val,
+    max_val,
+    mean_val,
+    step=0.1
+)
+
 
 # SELECT BOX
 for col in cat_cols:
