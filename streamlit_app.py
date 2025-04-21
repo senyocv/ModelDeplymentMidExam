@@ -71,7 +71,7 @@ enc_df = enc_df.reset_index(drop=True)
 
 final_input = pd.concat([input_df, enc_df], axis=1)
 
-# ppp debug checl final cols
+# ppp debug check final cols
 print("Final input columns:")
 print(final_input.columns)
 
