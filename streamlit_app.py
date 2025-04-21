@@ -60,7 +60,7 @@ user_input[avg_price_column] = st.sidebar.slider(
     min_val,
     max_val,
     mean_val,
-    step=0.1
+    step=0.05
 )
 
 
