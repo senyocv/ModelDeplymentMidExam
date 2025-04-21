@@ -9,7 +9,6 @@ def load_model():
     with open("rf_md_uts.pkl", "rb") as f:
         return pickle.load(f)
 
-
 @st.cache_resource
 def load_encoder():
     df = pd.read_csv("Dataset_B_hotel.csv")
@@ -22,21 +21,12 @@ def load_encoder():
     encoder.fit(df[cat_cols])
     return encoder
 
-
-
-
 model = load_model()
 encoder = load_encoder()
 cat_cols = ['type_of_meal_plan', 'room_type_reserved', 'market_segment_type']
 raw_data = pd.read_csv("Dataset_B_hotel.csv")
 
-
-
 st.sidebar.title("Hotel Booking Cancellation Predictor")
-
-if st.sidebar.checkbox("Show Raw Data"):
-    st.subheader("Raw Dataset")
-    st.dataframe(raw_data)
 
 # USER INPUT
 st.sidebar.subheader("Input Data for Prediction")
@@ -58,24 +48,31 @@ for col in cat_cols:
 for col in cat_cols:
     user_input[col] = st.sidebar.selectbox(col, sorted(raw_data[col].unique()))
 
+# ppp debug check features
+print("Expected feature names:")
 print(model.feature_names_in_)
 
-
-# gas pred
 input_df = pd.DataFrame([user_input])
 enc_arr = encoder.transform(input_df[cat_cols])
 enc_df = pd.DataFrame(enc_arr, columns=encoder.get_feature_names_out(cat_cols))
 
 input_df = input_df.drop(columns=cat_cols).reset_index(drop=True)
 enc_df = enc_df.reset_index(drop=True)
+
 final_input = pd.concat([input_df, enc_df], axis=1)
-#______
+
+# ppp debug checl final cols
+print("Final input columns:")
 print(final_input.columns)
 
+expected_columns = model.feature_names_in_
+final_input = final_input[expected_columns]
 
+# Display user input data
 st.subheader("User Input Data")
 st.write(final_input)
 
+# predict!!
 if st.button("Predict"):
     prediction = model.predict(final_input)
     prediction_label = "Canceled" if prediction[0] == 1 else "Not Canceled"
