@@ -10,12 +10,17 @@ def load_model():
         return pickle.load(f)
 
 @st.cache_resource
+@st.cache_resource
 def load_encoder():
     df = pd.read_csv("Dataset_B_hotel.csv")
     cat_cols = ['type_of_meal_plan', 'room_type_reserved', 'market_segment_type']
+    
+    df[cat_cols] = df[cat_cols].fillna("Unknown")
+    
     encoder = OneHotEncoder(sparse_output=False, drop='first', handle_unknown='ignore')
     encoder.fit(df[cat_cols])
     return encoder
+
 
 
 
