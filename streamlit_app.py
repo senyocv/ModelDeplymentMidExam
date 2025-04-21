@@ -12,6 +12,7 @@ def load_model():
 @st.cache_resource
 def load_encoder():
     df = pd.read_csv("Dataset_B_hotel.csv")
+    st.write("Columns in dataset:", df.columns.tolist())
     cat_cols = ['type_of_meal_plan', 'room_type_reserved', 'market_segment_type']
     
     df[cat_cols] = df[cat_cols].fillna("Unknown")
@@ -31,32 +32,15 @@ st.sidebar.title("Hotel Booking Cancellation Predictor")
 st.sidebar.subheader("Input Data for Prediction")
 user_input = {}
 
+# AUTO SLIDER
 numerical_columns = raw_data.drop(columns=cat_cols + ['booking_status']).select_dtypes(include=np.number).columns
 for col in numerical_columns:
-    min_val = float(raw_data[col].min())
-    max_val = float(raw_data[col].max())
-    mean_val = float(raw_data[col].mean())
-
-    if min_val == max_val:
-        st.sidebar.warning(f"Warning: Column '{col}' has the same min and max value. Using default range.")
-        min_val, max_val = 0, 10
-
-    # Determine if the column is integer or float for proper step size
-    if raw_data[col].dtype == 'int64':
-        step = 1  # Step for integer columns
-    else:
-        step = 0.1  # Step for float columns
-
-    try:
-        user_input[col] = st.sidebar.slider(
-            col,
-            min_val,
-            max_val,
-            mean_val,
-            step=step
-        )
-    except Exception as e:
-        st.error(f"Error with column '{col}': {e}")
+    user_input[col] = st.sidebar.slider(
+        col,
+        float(raw_data[col].min()),
+        float(raw_data[col].max()),
+        float(raw_data[col].mean())
+    )
 
 # SELECT BOX
 for col in cat_cols:
@@ -64,8 +48,8 @@ for col in cat_cols:
 for col in cat_cols:
     user_input[col] = st.sidebar.selectbox(col, sorted(raw_data[col].unique()))
 
-# ppp debug check features
-print("Expected feature names:")
+# ppp debug feat names ppp
+print("expected feature names:")
 print(model.feature_names_in_)
 
 input_df = pd.DataFrame([user_input])
@@ -77,18 +61,16 @@ enc_df = enc_df.reset_index(drop=True)
 
 final_input = pd.concat([input_df, enc_df], axis=1)
 
-# ppp debug check final cols
 print("Final input columns:")
 print(final_input.columns)
 
 expected_columns = model.feature_names_in_
 final_input = final_input[expected_columns]
 
-# Display user input data
 st.subheader("User Input Data")
 st.write(final_input)
 
-# predict!!
+# predict!!!
 if st.button("Predict"):
     prediction = model.predict(final_input)
     prediction_label = "Canceled" if prediction[0] == 1 else "Not Canceled"
