@@ -58,6 +58,9 @@ for col in cat_cols:
 for col in cat_cols:
     user_input[col] = st.sidebar.selectbox(col, sorted(raw_data[col].unique()))
 
+print(model.feature_names_in_)
+
+
 # gas pred
 input_df = pd.DataFrame([user_input])
 enc_arr = encoder.transform(input_df[cat_cols])
@@ -66,6 +69,9 @@ enc_df = pd.DataFrame(enc_arr, columns=encoder.get_feature_names_out(cat_cols))
 input_df = input_df.drop(columns=cat_cols).reset_index(drop=True)
 enc_df = enc_df.reset_index(drop=True)
 final_input = pd.concat([input_df, enc_df], axis=1)
+#______
+print(final_input.columns)
+
 
 st.subheader("User Input Data")
 st.write(final_input)
