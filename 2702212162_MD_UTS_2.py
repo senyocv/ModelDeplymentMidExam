@@ -106,7 +106,7 @@ le = LabelEncoder()
 y_train_enc = le.fit_transform(y_train.values.ravel())
 y_test_enc = le.transform(y_test.values.ravel())
 
-model_handler = RFModelHandler()
+model_handler = ModelHandler()
 model_handler.train(x_train_enc, y_train_enc)
 model_handler.evaluate(x_test_enc, y_test_enc)
 model_handler.save("rf_md_uts.pkl")
