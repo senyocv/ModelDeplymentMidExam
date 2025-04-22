@@ -24,7 +24,7 @@ class DataHandler:
         self.output_df = pd.DataFrame(le.fit_transform(self.data[target_column]), columns=[target_column])
         self.label_encoder = le
 
-    def split_data(self, test_size=0.2, random_state=42):
+    def split_data(self, test_size=0.2, random_state=354):
         self.x_train, self.x_test, self.y_train, self.y_test = train_test_split(
             self.input_df, self.output_df, test_size=test_size, random_state=random_state)
         return self.x_train, self.x_test, self.y_train, self.y_test
@@ -78,7 +78,7 @@ class ModelHandler:
     def evaluate(self, x_test, y_test):
         preds = self.model.predict(x_test)
         acc = accuracy_score(y_test, preds)
-        print("\nAccuracy: {:.3f}".format(acc))
+        print("\nAccuracy: {:.5f}".format(acc))
         print("\nClassification Report:\n", classification_report(y_test, preds, digits=3))
 
     def save(self, filename="rf_model.pkl"):
